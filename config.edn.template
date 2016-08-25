@@ -1,0 +1,4 @@
+{
+ :api-token "yourtoken"
+ :prefix "musicbot(you can use your own though)"
+ }
