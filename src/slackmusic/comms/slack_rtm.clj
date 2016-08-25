@@ -2,8 +2,7 @@
   (:require [clojure.core.async :as async :refer [go go-loop]]
             [clj-http.client :as http]
             [gniazdo.core :as ws]
-            [cheshire.core :refer [parse-string generate-string]]
-            [slackmusic.util :as util]))
+            [cheshire.core :refer [parse-string generate-string]]))
 
 
 (def ^:private rtm-socket-url
