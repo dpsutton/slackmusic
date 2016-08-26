@@ -24,24 +24,22 @@ to the channel that issued the command.
 ## How to Extend
 
 You need to tell the infrastructure that it can handle the input in
-comms.slack_rtm.clj/can-handle?. This is just a big or where each
+comms.slack_rtm.clj/can-handle?. This is just a big `or` where each
 function normalizes the input into a map containing the originating
 command and the title to search for (eg,
 
     { :type :youtube-preview
       :title "rick astley never gonna give you up" }
 
-This is thrown in a channel where there is a super simple multimethod
-dispatch chain. The multimethods title->link is a generic method that
-works on the type, although they all (for now) just get spotify links.
+This is thrown into a channel for the `-main` loop to watch for it. In
+here, we call `title->link` which tries every available service on the
+title to see which offerings we can offer up. Then finally, we have to
+`get-data!` on each of these, where we do any formatting. These can
+include going to the spotify service and getting details.
 
     {:service :spotify :title title
     :origin :command :url "https://someurl/"}
 
-The second multimethod in this chain is get-data! which takes this
-created map and dispatches according to the service. Since there is
-only spotify at the moment, there is only one implementation but this
-should make it easy to include future services.
 
 So for instance, now, it queries the spotify api and parses out a url
 from the big json response that we can shoot back to the
