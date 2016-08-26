@@ -1,6 +1,13 @@
 # slackmusic
 
-Slackbot listening to link to spotify (for now)
+Slackbot watches the channels that it is in. It responds to youtube
+links and to `musicbot artist song`.
+
+## Acknowledgement
+
+This project is a fork of
+[verma/clj-slackbot](https://github.com/verma/clj-slackbot). The sockets use
+was very nice and has really been helpful.
 
 ## Running
 
