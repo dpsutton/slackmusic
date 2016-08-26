@@ -17,6 +17,8 @@
     (when (:ok response)
       (:url response))))
 
+
+
 (defn connect-socket [url]
   (let [in (async/chan)
         out (async/chan)
@@ -81,9 +83,11 @@
           (do
             (if (= p cout)
               ;; the user sent us something, time to send it to the remote end point
-              (async/>! out {:id      (next-id) :type "message"
-                             :channel (get-in v [:meta :channel])
-                             :text    (-> v :musiclink)})
+              (doseq [link (:payload v)]
+                (println link)
+                (async/>! out (merge {:id (next-id) :type "message"
+                                      :channel (get-in v [:meta :channel])}
+                                     link)))
 
               ;; the websocket has sent us something, figure out if its of interest
               ;; to us, and if it is, send it to the evaluator
@@ -91,6 +95,7 @@
                 (println ":: incoming:" v)
                 (when-let [title-and-type (can-handle? prefix v)]
                   (println "can handle")
+                  (println title-and-type)
                   (async/>! cin {:input title-and-type
                                  :meta v}))))
             (recur [in out])))))

@@ -16,11 +16,10 @@
         (let [input (:input form)
               response (-> input
                            res/title->link
-                           res/get-data!)]
+                           res/polish)]
           (println "trying to handle: " response)
           (println "want to send back to channel: " (get-in form [:meta :channel]))
-          (>! out (assoc form :musiclink (or response
-                                             (format "couldn't match input %s" input))))
+          (>! out (assoc form :payload response))
           (recur [in out stop]))
 
         ;; something wrong happened, re init
