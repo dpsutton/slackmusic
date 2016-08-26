@@ -16,7 +16,8 @@
         (let [input (:input form)
               response (-> input
                            res/title->link
-                           res/polish)]
+                           res/polish
+                           (#(filter (complement nil?) %)))]
           (println "trying to handle: " response)
           (println "want to send back to channel: " (get-in form [:meta :channel]))
           (>! out (assoc form :payload response))

@@ -23,6 +23,8 @@
   (map #(% data) services))
 
 (defmulti get-data! :service)
+
+;; will always return
 (defmethod get-data! :gplay
   [{:keys [title url]}]
   {:text url})
@@ -37,6 +39,8 @@
 (defmethod get-data! nil
   [{:keys [title type]}]
   (format "No info found for %s or I can't handle %s yet." title type))
+
+;; not guaranteed to return anything
 (defmethod get-data! :spotify
   [{:keys [url]}]
   (let [data (client/get url)]
@@ -46,7 +50,8 @@
                            (get-in [:tracks :items])
                            first
                            (get-in [:external_urls :spotify]))]
-        {:text spotify-url}))))
+        (when spotify-url
+          {:text spotify-url})))))
 
 (defn polish
   [ms]
