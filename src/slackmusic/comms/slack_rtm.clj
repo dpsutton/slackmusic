@@ -17,9 +17,14 @@
     (when (:ok response)
       (:url response))))
 
+(defn ping-pong [out-pipe next-id delay]
+  (go-loop []
+    (async/<! (async/timeout delay))
+    (printf "Sending a ping request")
+    (async/>! out-pipe {:id (next-id) :type :ping})
+    (recur)))
 
-
-(defn connect-socket [url]
+(defn connect-socket [url next-id]
   (let [in (async/chan)
         out (async/chan)
         socket (ws/connect url
@@ -28,7 +33,8 @@
                              (async/put! in (parse-string m true)))
                            :on-error
                            (fn [_]
-                             (async/close! in)))]
+                             (async/close! in)))
+        heart-beat (ping-pong out next-id 7000)]
     (go-loop []
       (let [m (async/<! out)
             s (generate-string m)]
@@ -70,7 +76,7 @@
     (println ":: got websocket url:" url)
 
     ;; start a loop to process messages
-    (go-loop [[in out] (connect-socket url)]
+    (go-loop [[in out] (connect-socket url next-id)]
       ;; get whatever needs to be done for either data coming from the socket
       ;; or from the user
       (let [[v p] (async/alts! [cout in])]
