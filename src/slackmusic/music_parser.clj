@@ -29,16 +29,9 @@
   [{:keys [title url]}]
   {:text url})
 
-(comment
-  {:attachments [{:title title
-                  :pretext "Google Play Search Results"
-                  :text (format "<%s>" url)
-                  :mrkdwn_in [:text :pretext]
-                  :fallback url}]})
-
 (defmethod get-data! nil
   [{:keys [title type]}]
-  (format "No info found for %s or I can't handle %s yet." title type))
+  nil)
 
 ;; not guaranteed to return anything
 (defmethod get-data! :spotify
